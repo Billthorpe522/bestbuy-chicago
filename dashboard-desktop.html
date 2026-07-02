@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Best Buy Chicago HVAC Repipe — Job # 262302 — multi-unit tracker (desktop / PM view).">
+<title>Best Buy Chicago — Desktop</title>
+<style>
+  :root {
+    --bg: #0e1419;
+    --bg-elev: #161e26;
+    --bg-card: #1c2530;
+    --bg-table: #131a22;
+    --border: #2a3540;
+    --border-bright: #3a4855;
+    --teal: #00d4d4;
+    --teal-dark: #008b8b;
+    --teal-glow: rgba(0, 212, 212, 0.15);
+    --orange: #ff8c42;
+    --green: #5dd39e;
+    --red: #ff5c5c;
+    --yellow: #ffd166;
+    --purple: #b58cff;
+    --gray: #8a96a3;
+    --gray-mid: #6b7682;
+    --text: #e6ecf2;
+    --text-dim: #aab4c0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ===== PASSWORD GATE ===== */
+  #gate {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+    flex-direction: column;
+    padding: 24px;
+  }
+  #gate.unlocked { display: none; }
+  .gate-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-bright);
+    border-radius: 12px;
+    padding: 36px 28px;
+    max-width: 380px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  }
+  .gate-card h1 { margin: 0 0 6px; font-size: 1.4rem; color: var(--teal); letter-spacing: 0.5px; }
+  .gate-card p { margin: 0 0 22px; color: var(--text-dim); font-size: 0.85rem; }
+  .gate-card input {
+    width: 100%; padding: 12px 14px;
+    background: var(--bg); border: 1px solid var(--border-bright);
+    color: var(--text); border-radius: 6px;
+    font-size: 1rem; margin-bottom: 14px;
+  }
+  .gate-card input:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-glow); }
+  .gate-card button {
+    width: 100%; padding: 12px;
+    background: var(--teal); color: var(--bg);
+    border: none; border-radius: 6px;
+    font-weight: 600; cursor: pointer; font-size: 0.95rem;
+  }
+  .gate-card button:hover { background: #00b8b8; }
+  .gate-error { color: var(--red); font-size: 0.85rem; margin-top: 8px; min-height: 1.2em; }
+
+  /* ===== HEADER ===== */
+  .header {
+    background: linear-gradient(135deg, var(--bg-elev), var(--bg-card));
+    border-bottom: 1px solid var(--border-bright);
+    padding: 24px 32px;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 24px; flex-wrap: wrap;
+  }
+  .header .left .crumb {
+    color: var(--gray-mid);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 4px;
+  }
+  .header h1 { margin: 0; font-size: 1.6rem; color: var(--teal); letter-spacing: 0.5px; }
+  .header .sub { color: var(--text-dim); font-size: 0.85rem; margin-top: 4px; }
+  .header .right { display: flex; gap: 10px; flex-wrap: wrap; }
+  .header .pill {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    border-radius: 14px;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+  }
+  .header .pill b { color: var(--teal); font-weight: 600; }
+
+  /* ===== CONTAINER ===== */
+  .container { max-width: 1380px; margin: 0 auto; padding: 26px 24px 80px; }
+
+  /* ===== ROLLUP ===== */
+  .rollup {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    text-align: center;
+  }
+  .stat-card .label {
+    color: var(--gray);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .stat-card .value {
+    color: var(--teal);
+    font-size: 2rem;
+    font-weight: 700;
+  }
+  .stat-card .sub { color: var(--text-dim); font-size: 0.78rem; margin-top: 4px; }
+
+  /* ===== SECTION HEADERS ===== */
+  .section-header {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin: 32px 0 14px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+  }
+  .section-header h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+  .section-header .hint { color: var(--gray-mid); font-size: 0.8rem; }
+
+  /* ===== GRID ===== */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 18px;
+  }
+
+  /* ===== TABLE — Unit Stage Matrix ===== */
+  .table-wrap {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+  th {
+    text-align: left;
+    background: var(--bg-table);
+    color: var(--gray);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border-bright);
+    font-weight: 600;
+  }
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+
+  /* row colors based on status */
+  tr.row-reuse td:first-child { border-left: 3px solid var(--green); }
+  tr.row-partial td:first-child { border-left: 3px solid var(--orange); }
+  tr.row-full-repipe td:first-child { border-left: 3px solid var(--red); }
+
+  /* milestone checkboxes inside tables */
+  .ms-cell { padding: 0 !important; }
+  .ms-grid {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: repeat(var(--cols, 6), 1fr);
+    gap: 0;
+  }
+  .ms-cell-inner {
+    border-right: 1px solid var(--border);
+    text-align: center;
+    padding: 8px 4px;
+    cursor: pointer;
+    user-select: none;
+    min-width: 80px;
+  }
+  .ms-cell-inner:last-child { border-right: none; }
+  .ms-cell-inner.checked { background: rgba(0, 212, 212, 0.1); }
+  .ms-cell-inner .check {
+    font-size: 1rem;
+    color: var(--teal);
+    display: block;
+    margin-bottom: 2px;
+  }
+  .ms-cell-inner .lbl {
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    display: block;
+  }
+  .ms-cell-inner.checked .lbl { color: var(--text); text-decoration: line-through; opacity: 0.7; }
+
+  /* progress row */
+  .progress-row td { padding: 8px 12px; }
+  .progress-bar { background: var(--bg); height: 6px; border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--teal-dark), var(--teal)); }
+
+  /* unit name + spec */
+  .unit-name { font-weight: 600; color: var(--text); }
+  .unit-spec { color: var(--text-dim); font-size: 0.78rem; margin-top: 2px; }
+  .unit-scope { color: var(--gray); font-size: 0.72rem; font-style: italic; margin-top: 2px; }
+
+  /* ===== SIDE PANELS ===== */
+  .panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+  .panel h3 {
+    margin: 0 0 12px;
+    font-size: 0.85rem;
+    color: var(--teal);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .panel .row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+    gap: 10px;
+  }
+  .panel .row:last-child { border-bottom: none; }
+  .panel .key { color: var(--gray); }
+  .panel .val { color: var(--text); text-align: right; }
+  .panel .val.warn { color: var(--orange); }
+
+  /* lists */
+  .list { list-style: none; margin: 0; padding: 0; }
+  .list li {
+    padding: 8px 10px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 6px;
+    font-size: 0.82rem;
+    color: var(--text-dim);
+  }
+  .list li.qa { border-left: 3px solid var(--orange); }
+  .list li.note { border-left: 3px solid var(--teal-dark); }
+
+  /* ===== TWE BANNER + PHASES ===== */
+  .twe-banner {
+    background: linear-gradient(135deg, rgba(255, 92, 92, 0.1), var(--bg-card));
+    border: 1px solid var(--red);
+    border-left: 3px solid var(--red);
+    border-radius: 10px;
+    padding: 18px;
+    margin: 24px 0 16px;
+  }
+  .twe-banner h2 {
+    margin: 0 0 6px;
+    color: var(--red);
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .twe-banner p { margin: 0 0 10px; color: var(--text-dim); font-size: 0.88rem; }
+  .twe-banner .meta {
+    color: var(--text);
+    font-size: 0.88rem;
+  }
+  .twe-banner .meta b { color: var(--teal); }
+
+  .phase-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+  }
+  .phase-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .phase-card.emergency {
+    border: 1px solid var(--red);
+    background: linear-gradient(135deg, rgba(255, 92, 92, 0.15), var(--bg-card));
+  }
+  .phase-card.optional { border-color: var(--yellow); }
+  .phase-card.factory { border-color: var(--purple); }
+  .phase-card .head {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 6px;
+  }
+  .phase-card .phase-num {
+    background: var(--orange);
+    color: var(--bg);
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .phase-card.emergency .phase-num { background: var(--red); }
+  .phase-card.optional .phase-num { background: var(--yellow); color: #1a1a1a; }
+  .phase-card.factory .phase-num { background: var(--purple); }
+  .phase-card h3 {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text);
+  }
+  .phase-card p {
+    margin: 0 0 10px;
+    color: var(--text-dim);
+    font-size: 0.82rem;
+  }
+  .signoff {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+    margin-top: 8px;
+  }
+  .signoff-cell {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 5px 3px;
+    text-align: center;
+    font-size: 0.7rem;
+    cursor: pointer;
+    user-select: none;
+  }
+  .signoff-cell.checked {
+    background: var(--teal-glow);
+    border-color: var(--teal-dark);
+  }
+  .signoff-cell .unit-num {
+    color: var(--teal);
+    font-weight: 600;
+    font-size: 0.75rem;
+    display: block;
+  }
+  .signoff-cell .check {
+    color: var(--gray-mid);
+    font-size: 0.8rem;
+    display: block;
+    margin-top: 1px;
+  }
+  .signoff-cell.checked .check { color: var(--teal); }
+
+  /* materials table */
+  table.materials {
+    font-size: 0.85rem;
+  }
+  table.materials td:first-child { text-align: left; color: var(--text-dim); }
+  table.materials td { text-align: right; }
+
+  /* footer */
+  .footer {
+    text-align: center;
+    padding: 24px;
+    color: var(--gray-mid);
+    font-size: 0.75rem;
+    border-top: 1px solid var(--border);
+    margin-top: 30px;
+  }
+
+  /* responsive */
+  @media (max-width: 900px) {
+    .grid-2 { grid-template-columns: 1fr; }
+    .rollup { grid-template-columns: repeat(2, 1fr); }
+    .header { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PASSWORD GATE -->
+<div id="gate">
+  <div class="gate-card">
+    <h1>BEST BUY CHICAGO</h1>
+    <p>Job # 262302 — HVAC Repipe (Desktop / PM)</p>
+    <input type="password" id="pw" placeholder="Enter password" autocomplete="off">
+    <button onclick="unlock()">Unlock</button>
+    <div class="gate-error" id="err"></div>
+  </div>
+</div>
+
+<div id="main" style="display:none">
+
+  <div class="header">
+    <div class="left">
+      <div class="crumb">Super Project Manager · Best Buy</div>
+      <h1>Best Buy Chicago</h1>
+      <div class="sub">Job # 262302 · HVAC Repipe · 10 condensing/AHU pairs · Roosevelt Rd &amp; S Jefferson</div>
+    </div>
+    <div class="right">
+      <div class="pill">PM · <b>Kameron Koehlhoeffer</b></div>
+      <div class="pill">Piping Supt. · <b>Jon Bremner</b></div>
+      <div class="pill">Foreman · <b>Bill Thorpe</b></div>
+      <div class="pill">Reports Closed · <b>8</b></div>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- ROLLUP -->
+    <div class="rollup">
+      <div class="stat-card">
+        <div class="label">Units</div>
+        <div class="value">10</div>
+        <div class="sub">AHU/CU pairs</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Done</div>
+        <div class="value" id="ms-done">0</div>
+        <div class="sub"><span id="ms-total">60</span> milestones</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">% Complete</div>
+        <div class="value" id="pct-done">0%</div>
+        <div class="sub">overall</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Open Q</div>
+        <div class="value">4</div>
+        <div class="sub">awaiting GC</div>
+      </div>
+    </div>
+
+    <!-- UNIT STAGE MATRIX -->
+    <div class="section-header">
+      <h2>Unit Stage Matrix</h2>
+      <span class="hint">click cells to toggle</span>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 200px">Unit</th>
+            <th>Stages (left → right)</th>
+          </tr>
+        </thead>
+        <tbody id="unit-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- TWO-COL GRID -->
+    <div class="section-header"><h2>Project Reference</h2></div>
+    <div class="grid-2">
+      <div>
+        <div class="panel">
+          <h3>EMCOR Team</h3>
+          <div class="row"><span class="key">Foreman</span><span class="val">Bill Thorpe</span></div>
+          <div class="row"><span class="key">PM</span><span class="val">Kameron Koehlhoeffer</span></div>
+          <div class="row"><span class="key">PM phone</span><span class="val">224.477.7193</span></div>
+          <div class="row"><span class="key">Piping Supt.</span><span class="val">Jon Bremner</span></div>
+          <div class="row"><span class="key">Piping Supt. phone</span><span class="val">224.374.3714</span></div>
+          <div class="row"><span class="key">Sales Engineer</span><span class="val">Nick Doessel</span></div>
+          <div class="row"><span class="key">Sales Engineer phone</span><span class="val">847.343.2852</span></div>
+        </div>
+
+        <div class="panel">
+          <h3>External Engineer</h3>
+          <div class="row"><span class="key">Firm</span><span class="val">Kelleher Solutions LLC</span></div>
+          <div class="row"><span class="key">Engineer</span><span class="val">Thomas Kelleher</span></div>
+          <div class="row"><span class="key">Phone</span><span class="val">630.688.8104</span></div>
+          <div class="row"><span class="key">Location</span><span class="val">LaGrange, IL</span></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel">
+          <h3>Materials (per Kameron)</h3>
+          <table class="materials" style="width:100%">
+            <thead><tr><th>Pipe Size</th><th>Feet</th><th>90s</th></tr></thead>
+            <tbody>
+              <tr><td>5/16" (Liquid)</td><td>410</td><td>60</td></tr>
+              <tr><td>7/8" (Liquid)</td><td>150</td><td>20</td></tr>
+              <tr><td>1-5/8" (Suction)</td><td>350</td><td>50</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="panel">
+          <h3>Scope by Unit</h3>
+          <div class="row"><span class="key">#1, #3, #4, #6</span><span class="val" style="color:var(--green)">Re-use all</span></div>
+          <div class="row"><span class="key">#2, #5</span><span class="val" style="color:var(--orange)">Re-pipe suction ~150 ft</span></div>
+          <div class="row"><span class="key">#7, #8, #10</span><span class="val" style="color:var(--orange)">Re-pipe liquid only</span></div>
+          <div class="row"><span class="key">#9</span><span class="val" style="color:var(--red)">Full re-pipe ~150 ft</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TWE CONDENSATE SERVICE -->
+    <div class="twe-banner">
+      <h2>⚠ TWE Condensate Service</h2>
+      <p>Active issue: AHU-1 through AHU-5 (5 indoor-suspended Trane TWE240K units) throwing condensate. Carry-over from coil + low blower off-delay. Drip kits (BAYDRKT010) on order.</p>
+      <div class="meta">
+        <b>Phases:</b> 6 sequenced · <b>Units affected:</b> AHU-1, AHU-2, AHU-3, AHU-4, AHU-5
+      </div>
+    </div>
+
+    <div class="section-header">
+      <h2>TWE Service Phases</h2>
+      <span class="hint">tap cells to sign off per unit</span>
+    </div>
+    <div class="phase-grid" id="twe-phases-root"></div>
+
+    <div class="panel" style="margin-top:18px">
+      <h3>TWE Service Reference</h3>
+      <div class="row"><span class="key">Equipment</span><span class="val">Trane Odyssey TWE240K</span></div>
+      <div class="row"><span class="key">Refrigerant</span><span class="val">R-454B (A2L)</span></div>
+      <div class="row"><span class="key">Install location</span><span class="val warn">Indoor ceiling-suspended</span></div>
+      <div class="row"><span class="key">Root cause</span><span class="val">Coil carry-over + low blower off-delay</span></div>
+      <div class="row"><span class="key">Fix kit</span><span class="val">BAYDRKT010 drip kit (~5x, 4-5 wk lead)</span></div>
+      <div class="row"><span class="key">Full plan</span><span class="val">Best Buy - TWE Condensate Action Plan.html</span></div>
+    </div>
+
+    <!-- OPEN QUESTIONS + FIELD NOTES -->
+    <div class="section-header"><h2>Open Questions + Field Notes</h2></div>
+    <div class="grid-2">
+      <div class="panel">
+        <h3>Open Questions (4)</h3>
+        <ul class="list">
+          <li class="qa">5/16" liquid line confirmation (#7-#10) — owner: Kameron / submittal</li>
+          <li class="qa">7/8" liquid upsizing (#1-#5) vs. 5/8" spec — owner: Kameron</li>
+          <li class="qa">#7 unit liquid line — can 1/2" existing be used instead of running new 5/16"?</li>
+          <li class="qa">Units #9 &amp; #10 not on P1 plan — additional drawings needed</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Engineering Notes</h3>
+        <ul class="list">
+          <li class="note"><b>AHU 1-5:</b> 20T each. Dual circuit = 10T per circuit. 7/8" liquid + 1-5/8" suction.</li>
+          <li class="note"><b>AHU-6:</b> 15T. Dual circuit = 7.5T per circuit. 5/8" liquid + 1-5/8" suction.</li>
+          <li class="note"><b>AHU 7-10:</b> 2-5T. Existing pipe larger than recommended but within acceptable range.</li>
+          <li class="note"><b>AHU-2 &amp; AHU-5:</b> Existing suction 2-1/8" — oversized but acceptable.</li>
+          <li class="note"><b>5/16" sizing:</b> Jon Bremner flagged as uncommon — expects 1/4" or 3/8".</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer">
+      Best Buy Chicago · Job # 262302 · Built 2026-07-02 · Desktop / PM view
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ===== PASSWORD GATE =====
+  const STORAGE_KEY = 'bestbuy-desktop-unlocked';
+  function unlock() {
+    const pw = document.getElementById('pw').value;
+    if (pw === 'Emcor') {
+      sessionStorage.setItem(STORAGE_KEY, '1');
+      document.getElementById('gate').classList.add('unlocked');
+      document.getElementById('main').style.display = 'block';
+    } else {
+      document.getElementById('err').textContent = 'Wrong password';
+    }
+  }
+  if (sessionStorage.getItem(STORAGE_KEY) === '1') {
+    document.getElementById('gate').classList.add('unlocked');
+    document.getElementById('main').style.display = 'block';
+  }
+  document.getElementById('pw').addEventListener('keydown', e => { if (e.key === 'Enter') unlock(); });
+
+  // ===== UNIT DATA =====
+  const UNITS = [
+    { id: 1, tons: 20, status: 'reuse', liquid: '7/8"', suction: '1-5/8"', scope: 'Re-use all piping' },
+    { id: 2, tons: 20, status: 'partial', liquid: '7/8"', suction: '1-5/8"', scope: 'Re-pipe suction ~150 ft' },
+    { id: 3, tons: 20, status: 'reuse', liquid: '7/8"', suction: '1-5/8"', scope: 'Re-use all piping' },
+    { id: 4, tons: 20, status: 'reuse', liquid: '7/8"', suction: '1-5/8"', scope: 'Re-use all piping' },
+    { id: 5, tons: 20, status: 'partial', liquid: '7/8"', suction: '1-5/8"', scope: 'Re-pipe suction ~150 ft' },
+    { id: 6, tons: 15, status: 'reuse', liquid: '5/8"', suction: '1-5/8"', scope: 'Re-use all piping' },
+    { id: 7, tons: '2-5', status: 'partial', liquid: '5/16"', suction: '3/4"', scope: 'Re-pipe liquid only ~120 ft' },
+    { id: 8, tons: '2-5', status: 'partial', liquid: '5/16"', suction: '3/4"', scope: 'Re-pipe liquid only ~65 ft' },
+    { id: 9, tons: '2-5', status: 'full-repipe', liquid: '5/16"', suction: '7/8"', scope: 'Full re-pipe ~150 ft' },
+    { id: 10, tons: '2-5', status: 'partial', liquid: '5/16"', suction: '3/4"', scope: 'Re-pipe liquid only ~75 ft' }
+  ];
+
+  const STAGES = ['Demo unit', 'Demo piping', 'Install unit', 'Install piping', 'Pressure test', 'Charge / startup'];
+  const STAGE_IDS = ['demo-unit', 'demo-pipe', 'install-unit', 'install-pipe', 'pressure-test', 'charge-startup'];
+
+  // ===== TWE PHASES =====
+  const TWE_PHASES = [
+    { num: 'PHASE 0', title: 'Emergency: Sensor + Drain', cls: 'emergency', desc: 'Pump drip pans, wire float sensors, verify primary drain.' },
+    { num: 'PHASE 1', title: 'Coil Cleaning', cls: '', desc: 'Clean coils, restore airflow pattern.' },
+    { num: 'PHASE 2', title: 'Slow Blower (VFD)', cls: '', desc: 'Reduce face velocity to <500 FPM per IOM p.36.' },
+    { num: 'PHASE 3', title: 'Blower Off-Delay', cls: '', desc: 'Service dept adjusts 30s → 60-120s per Trane spec.' },
+    { num: 'PHASE 4', title: 'Aux Pan + Float Switch', cls: '', desc: 'Critical — AHU indoor-suspended above finished space.' },
+    { num: 'PHASE 5', title: 'BAYDRKT010 Drip Kit', cls: 'factory', desc: 'Factory kit. 4-5 wk lead. ~$450 × 5 units.' },
+    { num: 'PHASE 6', title: 'Warranty + Docs', cls: '', desc: '5+ units = warranty conversation with Trane.' }
+  ];
+
+  const store = {};
+  const KEY = 'bestbuy-desktop-v1';
+  try { Object.assign(store, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (e) {}
+
+  const tbody = document.getElementById('unit-tbody');
+
+  function refreshAll() {
+    let totalDone = 0, totalMs = 0;
+    document.querySelectorAll('tr[data-unit]').forEach(row => {
+      const cells = row.querySelectorAll('.ms-cell-inner');
+      let d = 0;
+      cells.forEach(c => { if (store[c.dataset.id]) { c.classList.add('checked'); c.querySelector('.check').textContent = '✓'; d++; } else { c.classList.remove('checked'); c.querySelector('.check').textContent = '☐'; } });
+      const t = cells.length;
+      const p = t ? Math.round(d * 100 / t) : 0;
+      row.querySelector('[data-pct]').textContent = p + '%';
+      row.querySelector('[data-fill]').style.width = p + '%';
+      totalDone += d; totalMs += t;
+    });
+    document.getElementById('ms-done').textContent = totalDone;
+    document.getElementById('ms-total').textContent = totalMs;
+    document.getElementById('pct-done').textContent = totalMs ? Math.round(totalDone * 100 / totalMs) + '%' : '0%';
+    // TWE
+    document.querySelectorAll('.signoff-cell').forEach(c => {
+      const u = c.dataset.unit;
+      const idx = c.closest('.signoff').dataset.phase;
+      const fullId = 'twe-p' + idx + '-u' + u;
+      if (store[fullId]) { c.classList.add('checked'); c.querySelector('.check').textContent = '✓'; }
+      else { c.classList.remove('checked'); c.querySelector('.check').textContent = '☐'; }
+    });
+  }
+
+  UNITS.forEach(u => {
+    const row = document.createElement('tr');
+    row.dataset.unit = u.id;
+    row.className = 'row-' + u.status;
+    row.innerHTML = `
+      <td>
+        <div class="unit-name">Unit #${u.id} <span style="color:var(--gray-mid);font-weight:400;font-size:0.8rem">· ${u.tons}T</span></div>
+        <div class="unit-spec">Liquid ${u.liquid} · Suction ${u.suction}</div>
+        <div class="unit-scope">${u.scope}</div>
+        <div class="progress-bar" style="margin-top:6px"><div class="progress-fill" data-fill style="width:0%"></div></div>
+        <div style="color:var(--teal);font-size:0.78rem;margin-top:4px"><span data-pct>0%</span></div>
+      </td>
+      <td class="ms-cell">
+        <div class="ms-grid" style="--cols:6">
+          ${STAGES.map((s, i) => `
+            <div class="ms-cell-inner" data-id="${u.id}-${STAGE_IDS[i]}">
+              <span class="check">☐</span>
+              <span class="lbl">${s}</span>
+            </div>`).join('')}
+        </div>
+      </td>
+    `;
+    tbody.appendChild(row);
+  });
+
+  document.querySelectorAll('.ms-cell-inner').forEach(c => {
+    c.addEventListener('click', () => {
+      const id = c.dataset.id;
+      store[id] = !store[id];
+      localStorage.setItem(KEY, JSON.stringify(store));
+      refreshAll();
+    });
+  });
+
+  // TWE phases
+  const tweRoot = document.getElementById('twe-phases-root');
+  TWE_PHASES.forEach((p, idx) => {
+    const card = document.createElement('div');
+    card.className = 'phase-card ' + p.cls;
+    card.innerHTML = `
+      <div class="head">
+        <span class="phase-num">${p.num}</span>
+        <h3>${p.title}</h3>
+      </div>
+      <p>${p.desc}</p>
+      <div class="signoff" data-phase="${idx}"></div>
+    `;
+    const so = card.querySelector('.signoff');
+    for (let u = 1; u <= 5; u++) {
+      const cell = document.createElement('div');
+      cell.className = 'signoff-cell';
+      cell.dataset.unit = u;
+      cell.innerHTML = `<span class="unit-num">AHU-${u}</span><span class="check">☐</span>`;
+      cell.addEventListener('click', () => {
+        const fullId = 'twe-p' + idx + '-u' + u;
+        store[fullId] = !store[fullId];
+        localStorage.setItem(KEY, JSON.stringify(store));
+        refreshAll();
+      });
+      so.appendChild(cell);
+    }
+    tweRoot.appendChild(card);
+  });
+
+  refreshAll();
+</script>
+
+</body>
+</html>

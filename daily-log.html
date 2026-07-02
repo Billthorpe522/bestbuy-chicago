@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Best Buy Chicago — Daily Log</title>
+<style>
+  :root {
+    --bg: #0e1419; --bg-card: #1c2530; --border: #2a3540;
+    --teal: #00d4d4; --teal-dark: #008b8b;
+    --orange: #ff8c42; --green: #5dd39e; --red: #ff5c5c;
+    --gray: #8a96a3; --gray-mid: #6b7682;
+    --text: #e6ecf2; --text-dim: #aab4c0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--bg); color: var(--text);
+    line-height: 1.5; min-height: 100vh;
+  }
+  .header {
+    background: linear-gradient(135deg, #161e26, var(--bg-card));
+    border-bottom: 1px solid var(--border);
+    padding: 24px 24px 18px;
+  }
+  .header .crumb { color: var(--gray-mid); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.5px; }
+  .header h1 { margin: 4px 0 0; font-size: 1.4rem; color: var(--teal); }
+  .header .sub { color: var(--text-dim); font-size: 0.85rem; margin-top: 4px; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 22px 20px 80px; }
+
+  .day-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px; margin-bottom: 14px;
+  }
+  .day-card .head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px;
+  }
+  .day-card .head h2 {
+    margin: 0; font-size: 1rem; color: var(--teal);
+  }
+  .day-card .head .meta { color: var(--gray-mid); font-size: 0.8rem; }
+
+  .row {
+    display: grid; grid-template-columns: 130px 1fr; gap: 12px;
+    padding: 8px 0; border-bottom: 1px dashed var(--border);
+    font-size: 0.88rem;
+  }
+  .row:last-child { border-bottom: none; }
+  .row .k { color: var(--gray); }
+  .row .v { color: var(--text); }
+  .row .v textarea {
+    width: 100%; min-height: 60px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--text);
+    padding: 8px; font-family: inherit; font-size: 0.85rem;
+    resize: vertical;
+  }
+  .row .v textarea:focus { outline: none; border-color: var(--teal); }
+  .add-btn {
+    background: var(--teal); color: var(--bg); border: none;
+    padding: 10px 18px; border-radius: 6px; font-weight: 600;
+    cursor: pointer; font-size: 0.9rem;
+  }
+  .add-btn:hover { background: #00b8b8; }
+  .empty {
+    text-align: center; padding: 40px 20px;
+    color: var(--gray-mid); font-size: 0.9rem;
+    border: 1px dashed var(--border); border-radius: 10px;
+  }
+  .footer { text-align: center; padding: 20px; color: var(--gray-mid); font-size: 0.75rem; }
+  .toolbar {
+    display: flex; gap: 10px; margin-bottom: 18px;
+    flex-wrap: wrap; align-items: center;
+  }
+  .toolbar .info { color: var(--text-dim); font-size: 0.82rem; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="crumb">Super Project Manager · Best Buy · Daily Log</div>
+  <h1>Best Buy Chicago — Daily Log</h1>
+  <div class="sub">Job # 262302 · entries saved to localStorage</div>
+</div>
+
+<div class="container">
+  <div class="toolbar">
+    <button class="add-btn" onclick="addDay()">+ Add Day</button>
+    <span class="info" id="info"></span>
+  </div>
+  <div id="days-root"></div>
+  <div id="empty-msg" class="empty" style="display:none">No days logged yet. Click "+ Add Day" to start.</div>
+</div>
+
+<script>
+  const KEY = 'bestbuy-dailylog-v1';
+  const today = new Date().toISOString().slice(0, 10);
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(KEY)) || []; }
+    catch (e) { return []; }
+  }
+  function save(d) { localStorage.setItem(KEY, JSON.stringify(d)); }
+
+  function render() {
+    const days = load();
+    const root = document.getElementById('days-root');
+    const empty = document.getElementById('empty-msg');
+    root.innerHTML = '';
+    if (!days.length) {
+      empty.style.display = 'block';
+      document.getElementById('info').textContent = '0 days logged';
+      return;
+    }
+    empty.style.display = 'none';
+    document.getElementById('info').textContent = days.length + ' day' + (days.length === 1 ? '' : 's') + ' logged';
+
+    days.slice().reverse().forEach((d, idx) => {
+      const realIdx = days.length - 1 - idx;
+      const card = document.createElement('div');
+      card.className = 'day-card';
+      card.innerHTML = `
+        <div class="head">
+          <h2>Day #${realIdx + 1}</h2>
+          <span class="meta">${d.date}</span>
+        </div>
+        <div class="row"><span class="k">Weather</span><span class="v"><textarea data-field="weather" placeholder="Clear / rain / wind / temp">${d.weather || ''}</textarea></span></div>
+        <div class="row"><span class="k">Crew On-Site</span><span class="v"><textarea data-field="crew" placeholder="Names + trades">${d.crew || ''}</textarea></span></div>
+        <div class="row"><span class="k">Work Performed</span><span class="v"><textarea data-field="work" placeholder="What got done">${d.work || ''}</textarea></span></div>
+        <div class="row"><span class="k">Issues / Delays</span><span class="v"><textarea data-field="issues" placeholder="Anything blocking">${d.issues || ''}</textarea></span></div>
+        <div class="row"><span class="k">Safety</span><span class="v"><textarea data-field="safety" placeholder="Toolbox talks, incidents">${d.safety || ''}</textarea></span></div>
+        <div class="row"><span class="k">Photos</span><span class="v"><textarea data-field="photos" placeholder="Filenames or note if none">${d.photos || ''}</textarea></span></div>
+        <div style="margin-top: 10px; text-align: right;">
+          <button data-del="${realIdx}" style="background:transparent;color:var(--red);border:1px solid var(--red);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Delete</button>
+        </div>
+      `;
+      card.querySelectorAll('textarea').forEach(t => {
+        t.addEventListener('input', e => {
+          const days = load();
+          days[realIdx][t.dataset.field] = t.value;
+          save(days);
+        });
+      });
+      card.querySelector('[data-del]').addEventListener('click', () => {
+        if (!confirm('Delete day #' + (realIdx + 1) + '?')) return;
+        const days = load();
+        days.splice(realIdx, 1);
+        save(days);
+        render();
+      });
+      root.appendChild(card);
+    });
+  }
+
+  function addDay() {
+    const days = load();
+    days.push({ date: today, weather:'', crew:'', work:'', issues:'', safety:'', photos:'' });
+    save(days);
+    render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  render();
+</script>
+
+</body>
+</html>

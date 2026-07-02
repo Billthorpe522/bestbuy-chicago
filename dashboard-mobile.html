@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Best Buy Chicago HVAC Repipe — Job # 262302 — multi-unit tracker (mobile).">
+<title>Best Buy Chicago — Mobile</title>
+<style>
+  :root {
+    --bg: #0e1419;
+    --bg-elev: #161e26;
+    --bg-card: #1c2530;
+    --border: #2a3540;
+    --border-bright: #3a4855;
+    --teal: #00d4d4;
+    --teal-dark: #008b8b;
+    --teal-glow: rgba(0, 212, 212, 0.15);
+    --orange: #ff8c42;
+    --orange-bg: rgba(255, 140, 66, 0.08);
+    --green: #5dd39e;
+    --red: #ff5c5c;
+    --yellow: #ffd166;
+    --purple: #b58cff;
+    --gray: #8a96a3;
+    --gray-mid: #6b7682;
+    --text: #e6ecf2;
+    --text-dim: #aab4c0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    min-height: 100vh;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* ===== PASSWORD GATE ===== */
+  #gate {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+    flex-direction: column;
+    padding: 24px;
+  }
+  #gate.unlocked { display: none; }
+  .gate-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-bright);
+    border-radius: 12px;
+    padding: 36px 28px;
+    max-width: 380px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  }
+  .gate-card h1 { margin: 0 0 6px; font-size: 1.4rem; color: var(--teal); letter-spacing: 0.5px; }
+  .gate-card p { margin: 0 0 22px; color: var(--text-dim); font-size: 0.85rem; }
+  .gate-card input {
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--bg);
+    border: 1px solid var(--border-bright);
+    color: var(--text);
+    border-radius: 6px;
+    font-size: 1rem;
+    margin-bottom: 14px;
+  }
+  .gate-card input:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-glow); }
+  .gate-card button {
+    width: 100%;
+    padding: 12px;
+    background: var(--teal);
+    color: var(--bg);
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.95rem;
+  }
+  .gate-card button:hover { background: #00b8b8; }
+  .gate-error { color: var(--red); font-size: 0.85rem; margin-top: 8px; min-height: 1.2em; }
+
+  /* ===== HEADER ===== */
+  .header {
+    background: linear-gradient(135deg, var(--bg-elev), var(--bg-card));
+    border-bottom: 1px solid var(--border-bright);
+    padding: 26px 20px 22px;
+  }
+  .header .crumb {
+    color: var(--gray-mid);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 6px;
+  }
+  .header h1 {
+    margin: 0 0 4px;
+    font-size: 1.55rem;
+    color: var(--teal);
+    letter-spacing: 0.5px;
+  }
+  .header .jobnum {
+    color: var(--gray);
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+  }
+  .header .meta {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    margin-top: 8px;
+  }
+  .header .meta span {
+    background: var(--bg);
+    padding: 4px 10px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+  }
+
+  /* ===== CONTAINER ===== */
+  .container { max-width: 720px; margin: 0 auto; padding: 22px 16px 80px; }
+
+  /* ===== SECTION HEADERS ===== */
+  .section-header {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin: 26px 0 12px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+  }
+  .section-header h2 {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+  .section-header .hint { color: var(--gray-mid); font-size: 0.78rem; }
+
+  /* ===== ROLLUP ===== */
+  .rollup {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+  }
+  .stat-card .label {
+    color: var(--gray);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .stat-card .value {
+    color: var(--teal);
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  .stat-card .sub { color: var(--text-dim); font-size: 0.75rem; margin-top: 4px; }
+
+  /* ===== UNIT CARDS ===== */
+  .unit-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left-width: 3px;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+  .unit-card.reuse { border-left-color: var(--green); }
+  .unit-card.partial { border-left-color: var(--orange); }
+  .unit-card.full-repipe { border-left-color: var(--red); }
+  .unit-card .top {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 8px;
+    flex-wrap: wrap; gap: 6px;
+  }
+  .unit-card .name {
+    font-weight: 600;
+    color: var(--text);
+    font-size: 0.95rem;
+  }
+  .unit-card .name small {
+    color: var(--gray-mid);
+    font-weight: 400;
+    font-size: 0.78rem;
+    margin-left: 6px;
+  }
+  .unit-card .pct {
+    font-variant-numeric: tabular-nums;
+    color: var(--teal);
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+  .unit-card .specs {
+    color: var(--text-dim);
+    font-size: 0.78rem;
+    margin-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+  }
+  .unit-card .specs b { color: var(--text); font-weight: 500; }
+  .unit-card .scope {
+    color: var(--gray);
+    font-size: 0.78rem;
+    margin-bottom: 10px;
+    font-style: italic;
+  }
+  .progress-bar {
+    background: var(--bg);
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal-dark), var(--teal));
+    width: 0%;
+    transition: width 0.4s;
+  }
+  .milestones {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .milestone {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 0.88rem;
+  }
+  .milestone.checked { opacity: 0.55; }
+  .milestone.checked .label { text-decoration: line-through; }
+  .milestone .box {
+    width: 20px; height: 20px;
+    border: 2px solid var(--border-bright);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 0.85rem;
+    color: var(--bg);
+  }
+  .milestone.checked .box {
+    background: var(--teal);
+    border-color: var(--teal);
+  }
+  .milestone .label { color: var(--text); flex: 1; }
+
+  /* ===== TWE SECTION ===== */
+  .twe-banner {
+    background: linear-gradient(135deg, rgba(255, 92, 92, 0.1), var(--bg-card));
+    border: 1px solid var(--red);
+    border-left: 3px solid var(--red);
+    border-radius: 10px;
+    padding: 16px;
+    margin: 24px 0 16px;
+  }
+  .twe-banner h2 {
+    margin: 0 0 6px;
+    color: var(--red);
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .twe-banner p { margin: 0 0 10px; color: var(--text-dim); font-size: 0.85rem; }
+  .twe-banner .meta {
+    color: var(--text);
+    font-size: 0.85rem;
+  }
+  .twe-banner .meta b { color: var(--teal); }
+
+  /* ===== TWE PHASES ===== */
+  .phase-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+  .phase-card.emergency {
+    border: 1px solid var(--red);
+    background: linear-gradient(135deg, rgba(255, 92, 92, 0.15), var(--bg-card));
+  }
+  .phase-card .head {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 8px;
+  }
+  .phase-card .phase-num {
+    background: var(--orange);
+    color: var(--bg);
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .phase-card.emergency .phase-num { background: var(--red); }
+  .phase-card.optional .phase-num { background: var(--yellow); color: #1a1a1a; }
+  .phase-card.factory .phase-num { background: var(--purple); }
+  .phase-card h3 {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--text);
+  }
+  .phase-card p {
+    margin: 0 0 10px;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+  }
+  .phase-card .signoff {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .signoff-cell {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 4px;
+    text-align: center;
+    font-size: 0.7rem;
+    cursor: pointer;
+    user-select: none;
+  }
+  .signoff-cell.checked {
+    background: var(--teal-glow);
+    border-color: var(--teal-dark);
+  }
+  .signoff-cell .unit-num {
+    color: var(--teal);
+    font-weight: 600;
+    font-size: 0.78rem;
+    display: block;
+  }
+  .signoff-cell .check {
+    color: var(--gray-mid);
+    font-size: 0.85rem;
+    display: block;
+    margin-top: 2px;
+  }
+  .signoff-cell.checked .check { color: var(--teal); }
+
+  /* ===== INFO BLOCKS ===== */
+  .info-block {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+  .info-block h3 {
+    margin: 0 0 8px;
+    font-size: 0.85rem;
+    color: var(--teal);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .info-block .row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+    gap: 10px;
+  }
+  .info-block .row:last-child { border-bottom: none; }
+  .info-block .key { color: var(--gray); }
+  .info-block .val { color: var(--text); text-align: right; }
+  .info-block .val.warn { color: var(--orange); }
+
+  /* ===== LIST ITEMS ===== */
+  .list { list-style: none; margin: 0; padding: 0; }
+  .list li {
+    padding: 8px 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+  }
+  .list li.qa { border-left: 3px solid var(--orange); }
+  .list li.note { border-left: 3px solid var(--teal-dark); }
+
+  /* ===== TABLE ===== */
+  .table-wrap {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th {
+    text-align: left;
+    background: var(--bg);
+    color: var(--gray);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border-bright);
+    font-weight: 600;
+  }
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    text-align: right;
+  }
+  td:first-child { text-align: left; color: var(--text-dim); }
+  tr:last-child td { border-bottom: none; }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    text-align: center;
+    padding: 24px 16px;
+    color: var(--gray-mid);
+    font-size: 0.75rem;
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<!-- PASSWORD GATE -->
+<div id="gate">
+  <div class="gate-card">
+    <h1>BEST BUY CHICAGO</h1>
+    <p>Job # 262302 — HVAC Repipe (Mobile)</p>
+    <input type="password" id="pw" placeholder="Enter password" autocomplete="off">
+    <button onclick="unlock()">Unlock</button>
+    <div class="gate-error" id="err"></div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main" style="display:none">
+
+  <div class="header">
+    <div class="crumb">Super Project Manager · Best Buy</div>
+    <h1>Best Buy Chicago</h1>
+    <div class="jobnum">Job # 262302 · HVAC Repipe · 10 units · 8 reports closed</div>
+    <div class="meta">
+      <span>📍 Roosevelt Rd &amp; S Jefferson</span>
+      <span>🏢 Chicago Best Buy</span>
+      <span>👷 Bill Thorpe</span>
+      <span>📞 Kameron 224.477.7193</span>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- ROLLUP -->
+    <div class="section-header"><h2>Rollup</h2><span class="hint">tap milestones</span></div>
+    <div class="rollup">
+      <div class="stat-card">
+        <div class="label">Units</div>
+        <div class="value">10</div>
+        <div class="sub">AHU/CU pairs</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Done</div>
+        <div class="value" id="ms-done">0</div>
+        <div class="sub"><span id="ms-total">60</span> milestones</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">% Complete</div>
+        <div class="value" id="pct-done">0%</div>
+        <div class="sub">overall</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Reports</div>
+        <div class="value">8</div>
+        <div class="sub">closed</div>
+      </div>
+    </div>
+
+    <!-- PER-UNIT CARDS -->
+    <div class="section-header"><h2>Units</h2><span class="hint">10 total</span></div>
+    <div id="units-root"></div>
+
+    <!-- TWE CONDENSATE SERVICE -->
+    <div class="twe-banner">
+      <h2>⚠ TWE Condensate Service</h2>
+      <p>Active issue: AHU-1 through AHU-5 (5 indoor-suspended Trane TWE240K units) throwing condensate. Carry-over from coil + low blower off-delay. Drip kits (BAYDRKT010) on order.</p>
+      <div class="meta">
+        <b>Phases:</b> 6 sequenced · <b>Units affected:</b> AHU-1, AHU-2, AHU-3, AHU-4, AHU-5
+      </div>
+    </div>
+    <div id="twe-phases-root"></div>
+    <div class="info-block" style="margin-top:14px">
+      <h3>TWE Service Reference</h3>
+      <div class="row"><span class="key">Equipment</span><span class="val">Trane Odyssey TWE240K</span></div>
+      <div class="row"><span class="key">Refrigerant</span><span class="val">R-454B (A2L)</span></div>
+      <div class="row"><span class="key">Install location</span><span class="val warn">Indoor ceiling-suspended</span></div>
+      <div class="row"><span class="key">Root cause</span><span class="val">Coil carry-over + low blower off-delay</span></div>
+      <div class="row"><span class="key">Fix kit</span><span class="val">BAYDRKT010 drip kit (~5x, 4-5 wk lead)</span></div>
+      <div class="row"><span class="key">Full plan</span><span class="val">Best Buy - TWE Condensate Action Plan.html</span></div>
+    </div>
+
+    <!-- MATERIALS -->
+    <div class="section-header"><h2>Materials</h2><span class="hint">from Kameron</span></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Pipe Size</th><th>Feet</th><th>90° Elbows</th></tr></thead>
+        <tbody>
+          <tr><td>5/16" (Liquid)</td><td>410 ft</td><td>60</td></tr>
+          <tr><td>7/8" (Liquid)</td><td>150 ft</td><td>20</td></tr>
+          <tr><td>1-5/8" (Suction)</td><td>350 ft</td><td>50</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CONTACTS -->
+    <div class="section-header"><h2>Contacts</h2></div>
+    <div class="info-block">
+      <h3>EMCOR</h3>
+      <div class="row"><span class="key">PM</span><span class="val">Kameron Koehlhoeffer · 224.477.7193</span></div>
+      <div class="row"><span class="key">Piping Supt.</span><span class="val">Jon Bremner · 224.374.3714</span></div>
+      <div class="row"><span class="key">Sales Engineer</span><span class="val">Nick Doessel · 847.343.2852</span></div>
+      <div class="row"><span class="key">Foreman</span><span class="val">Bill Thorpe</span></div>
+    </div>
+    <div class="info-block">
+      <h3>External</h3>
+      <div class="row"><span class="key">Engineer</span><span class="val">Thomas Kelleher · 630.688.8104</span></div>
+    </div>
+
+    <!-- ENGINEERING NOTES -->
+    <div class="section-header"><h2>Engineering Notes</h2><span class="hint">Kelleher</span></div>
+    <ul class="list">
+      <li class="note"><b>AHU 1-5:</b> 20T each. Dual circuit = 10T per circuit. 7/8" liquid + 1-5/8" suction.</li>
+      <li class="note"><b>AHU-6:</b> 15T. Dual circuit = 7.5T per circuit. 5/8" liquid + 1-5/8" suction.</li>
+      <li class="note"><b>AHU 7-10:</b> 2-5T. Existing pipe larger than recommended but within acceptable range.</li>
+      <li class="note"><b>AHU-2 &amp; AHU-5:</b> Existing suction 2-1/8" — oversized but acceptable. Kameron opted to re-pipe.</li>
+      <li class="note"><b>5/16" sizing:</b> Jon Bremner flagged 5/16" as uncommon — expects 1/4" or 3/8". Worth double-checking submittal before ordering.</li>
+    </ul>
+
+    <!-- OPEN QUESTIONS -->
+    <div class="section-header"><h2>Open Questions</h2><span class="hint">4 outstanding</span></div>
+    <ul class="list">
+      <li class="qa">5/16" liquid line confirmation (#7-#10) — owner: Kameron / submittal</li>
+      <li class="qa">7/8" liquid upsizing (#1-#5) vs. 5/8" spec — owner: Kameron</li>
+      <li class="qa">#7 unit liquid line — can 1/2" existing be used instead of running new 5/16"?</li>
+      <li class="qa">Units #9 &amp; #10 not on P1 plan — additional drawings needed</li>
+    </ul>
+
+    <div class="footer">
+      Best Buy Chicago · Job # 262302 · Built 2026-07-02 · Mobile
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ===== PASSWORD GATE =====
+  const STORAGE_KEY = 'bestbuy-mobile-unlocked';
+  function unlock() {
+    const pw = document.getElementById('pw').value;
+    if (pw === 'Emcor') {
+      sessionStorage.setItem(STORAGE_KEY, '1');
+      document.getElementById('gate').classList.add('unlocked');
+      document.getElementById('main').style.display = 'block';
+    } else {
+      document.getElementById('err').textContent = 'Wrong password';
+    }
+  }
+  if (sessionStorage.getItem(STORAGE_KEY) === '1') {
+    document.getElementById('gate').classList.add('unlocked');
+    document.getElementById('main').style.display = 'block';
+  }
+  document.getElementById('pw').addEventListener('keydown', e => { if (e.key === 'Enter') unlock(); });
+
+  // ===== UNIT DATA =====
+  const UNITS = [
+    { id: 1, tons: 20, status: 'reuse', liquid: '7/8"', suction: '1-5/8"', scope: 'Re-use all piping', cu: 'CU-1', ahu: 'Mech Room top-left' },
+    { id: 2, tons: 20, status: 'partial', liquid: '7/8"', suction: '1-5/8"', existing: '2-1/8"', scope: 'Re-pipe suction ~150 ft', cu: 'CU-2', ahu: 'Mech Room top-left' },
+    { id: 3, tons: 20, status: 'reuse', liquid: '7/8"', suction: '1-5/8"', scope: 'Re-use all piping', cu: 'CU-3', ahu: 'Mech Room middle-left' },
+    { id: 4, tons: 20, status: 'reuse', liquid: '7/8"', suction: '1-5/8"', scope: 'Re-use all piping', cu: 'CU-4', ahu: 'Mech Room middle-left' },
+    { id: 5, tons: 20, status: 'partial', liquid: '7/8"', suction: '1-5/8"', existing: '2-1/8"', scope: 'Re-pipe suction ~150 ft', cu: 'CU-5', ahu: 'Mech Room top-right (near Room 17)' },
+    { id: 6, tons: 15, status: 'reuse', liquid: '5/8"', suction: '1-5/8"', scope: 'Re-use all piping', cu: 'CU-6', ahu: 'Mech Room top-right (near Room 17)' },
+    { id: 7, tons: '2-5', status: 'partial', liquid: '5/16"', suction: '3/4"', scope: 'Re-pipe liquid only ~120 ft', cu: 'CU-7', ahu: 'Mech Room middle-right' },
+    { id: 8, tons: '2-5', status: 'partial', liquid: '5/16"', suction: '3/4"', scope: 'Re-pipe liquid only ~65 ft', cu: 'CU-8', ahu: 'Mech Room middle-right' },
+    { id: 9, tons: '2-5', status: 'full-repipe', liquid: '5/16"', suction: '7/8"', scope: 'Full re-pipe ~150 ft', cu: '—', ahu: 'See additional drawings' },
+    { id: 10, tons: '2-5', status: 'partial', liquid: '5/16"', suction: '3/4"', scope: 'Re-pipe liquid only ~75 ft', cu: '—', ahu: 'See additional drawings' }
+  ];
+
+  const MILESTONES = [
+    { id: 'demo-unit', label: 'Demo unit' },
+    { id: 'demo-pipe', label: 'Demo piping' },
+    { id: 'install-unit', label: 'Install unit' },
+    { id: 'install-pipe', label: 'Install piping' },
+    { id: 'pressure-test', label: 'Pressure test' },
+    { id: 'charge-startup', label: 'Charge / startup' }
+  ];
+
+  const store = {};
+  const KEY = 'bestbuy-mobile-v1';
+  try { Object.assign(store, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (e) {}
+
+  function refreshAll() {
+    let totalDone = 0, totalMs = 0;
+    document.querySelectorAll('[data-card]').forEach(c => {
+      const unit = c.dataset.unit;
+      let d = 0; let t = 0;
+      c.querySelectorAll('.milestone').forEach(m => {
+        t++;
+        const fullId = unit + '-' + m.dataset.id;
+        if (store[fullId]) {
+          m.classList.add('checked');
+          m.querySelector('.box').textContent = '✓';
+          d++;
+        } else {
+          m.classList.remove('checked');
+          m.querySelector('.box').textContent = '';
+        }
+      });
+      const p = t ? Math.round(d * 100 / t) : 0;
+      c.querySelector('[data-pct]').textContent = p + '%';
+      c.querySelector('[data-fill]').style.width = p + '%';
+      totalDone += d; totalMs += t;
+    });
+    document.getElementById('ms-done').textContent = totalDone;
+    document.getElementById('ms-total').textContent = totalMs;
+    document.getElementById('pct-done').textContent = totalMs ? Math.round(totalDone * 100 / totalMs) + '%' : '0%';
+  }
+
+  function renderUnits() {
+    const root = document.getElementById('units-root');
+    UNITS.forEach(u => {
+      const card = document.createElement('div');
+      card.className = 'unit-card ' + u.status;
+      card.dataset.card = 'unit';
+      card.dataset.unit = u.id;
+      const existing = u.existing ? ` · existing <b>${u.existing}</b>` : '';
+      card.innerHTML = `
+        <div class="top">
+          <span class="name">Unit #${u.id} <small>${u.tons}T · ${u.cu} · ${u.ahu}</small></span>
+          <span class="pct" data-pct>0%</span>
+        </div>
+        <div class="specs">
+          <span>Liquid: <b>${u.liquid}</b></span>
+          <span>Suction: <b>${u.suction}</b>${existing}</span>
+        </div>
+        <div class="scope">${u.scope}</div>
+        <div class="progress-bar"><div class="progress-fill" data-fill></div></div>
+        <div class="milestones"></div>
+      `;
+      const ml = card.querySelector('.milestones');
+      MILESTONES.forEach(m => {
+        const div = document.createElement('div');
+        div.className = 'milestone';
+        div.dataset.id = m.id;
+        div.innerHTML = `<span class="box"></span><span class="label">${m.label}</span>`;
+        div.addEventListener('click', () => {
+          const fullId = u.id + '-' + m.id;
+          store[fullId] = !store[fullId];
+          localStorage.setItem(KEY, JSON.stringify(store));
+          refreshAll();
+        });
+        ml.appendChild(div);
+      });
+      root.appendChild(card);
+    });
+  }
+
+  // ===== TWE PHASES (6 phases × 5 units sign-off) =====
+  const TWE_PHASES = [
+    { num: 'PHASE 0', title: 'Emergency: Sensor + Drain Verification', cls: 'emergency', desc: 'Pump drip pans, wire float sensors to safety circuit, verify primary drain flow. Active leak situation.' },
+    { num: 'PHASE 1', title: 'Coil Cleaning', cls: '', desc: 'Clean coils to remove biofilm and restore airflow pattern.' },
+    { num: 'PHASE 2', title: 'Slow Blower (VFD adjustment)', cls: '', desc: 'Reduce face velocity to <500 FPM per IOM p.36.' },
+    { num: 'PHASE 3', title: 'Blower Off-Delay (30s → 60-120s)', cls: '', desc: 'Service dept adjusts off-delay per Trane spec.' },
+    { num: 'PHASE 4', title: 'Aux Pan + Float Switch Confirmation', cls: '', desc: 'Critical — AHU is indoor-suspended above finished space.' },
+    { num: 'PHASE 5', title: 'BAYDRKT010 Drip Kit Install', cls: 'factory', desc: 'Factory kit. 4-5 week lead time. ~$450 × 5 units.' },
+    { num: 'PHASE 6', title: 'Warranty + Documentation', cls: '', desc: '5+ units affected = warranty conversation with Trane.' }
+  ];
+
+  function renderTwe() {
+    const root = document.getElementById('twe-phases-root');
+    TWE_PHASES.forEach((p, idx) => {
+      const card = document.createElement('div');
+      card.className = 'phase-card ' + p.cls;
+      card.innerHTML = `
+        <div class="head">
+          <span class="phase-num">${p.num}</span>
+          <h3>${p.title}</h3>
+        </div>
+        <p>${p.desc}</p>
+        <div class="signoff" data-phase="${idx}"></div>
+      `;
+      const so = card.querySelector('.signoff');
+      for (let u = 1; u <= 5; u++) {
+        const cell = document.createElement('div');
+        cell.className = 'signoff-cell';
+        cell.dataset.unit = u;
+        cell.innerHTML = `<span class="unit-num">AHU-${u}</span><span class="check">☐</span>`;
+        cell.addEventListener('click', () => {
+          const fullId = 'twe-p' + idx + '-u' + u;
+          store[fullId] = !store[fullId];
+          localStorage.setItem(KEY, JSON.stringify(store));
+          if (store[fullId]) { cell.classList.add('checked'); cell.querySelector('.check').textContent = '✓'; }
+          else { cell.classList.remove('checked'); cell.querySelector('.check').textContent = '☐'; }
+        });
+        so.appendChild(cell);
+      }
+      root.appendChild(card);
+    });
+    // re-apply state
+    document.querySelectorAll('.signoff-cell').forEach(c => {
+      const u = c.dataset.unit;
+      const idx = c.closest('.signoff').dataset.phase;
+      const fullId = 'twe-p' + idx + '-u' + u;
+      if (store[fullId]) { c.classList.add('checked'); c.querySelector('.check').textContent = '✓'; }
+    });
+  }
+
+  renderUnits();
+  renderTwe();
+  refreshAll();
+</script>
+
+</body>
+</html>
